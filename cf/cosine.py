@@ -7,6 +7,3 @@ def cosine_similarity(base, target):
     else:
         return 1/evaluation
 
-
-
-print(cosine_similarity([1, 2, 3], [11, 2, 3]))

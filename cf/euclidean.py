@@ -7,6 +7,3 @@ def euclidean_similarity(base_user_itens, target_user_itens):
     else:
         return 1/dst
 
-
-print(euclidean_similarity([1, 2, 3, 5], [23, 58, 99, 1]))
-print(euclidean_similarity([1, 2, 3, 5], [1, 2, 3,5]))

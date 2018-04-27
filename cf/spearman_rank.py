@@ -8,6 +8,3 @@ def spearman_similarity(base, target):
         return evaluation[0]
 
 
-
-print(spearman_similarity([1, 2, 3], [11, 2, 3]))
-print(spearman_similarity([1, 2, 3], [1, 2, 3]))

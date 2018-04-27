@@ -22,15 +22,3 @@ def lik(parameters):
          (2 * sigma ** 2) * sum((y - y_exp) ** 2))
     return L
 
-
-z = loglike_similarity([1, 2, 3], [1, 2, 3])
-print(z)
-w = loglike_similarity([1, 2, 3], [1, 2, 31])
-print(w)
-h = loglike_similarity([11212, 12122, 1212123], [1, 2, 31])
-print(h)
-
-
-
-h1 = loglike_similarity([11212, 12122, 1212123], [100000011, 88888888888, 999999])
-print(h1)
