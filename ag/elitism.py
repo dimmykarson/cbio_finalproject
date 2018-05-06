@@ -1,11 +1,6 @@
-import heapq, random, copy, math
-from cbio_finalproject.cf.pearson_correlation import pearson_similarity
-from cbio_finalproject.cf.spearman_rank import spearman_similarity
-from cbio_finalproject.cf.cosine import cosine_similarity
-from cbio_finalproject.cf.euclidean import euclidean_similarity
-from cbio_finalproject.ag.predition import *
-from cbio_finalproject.core.users import load
 
+from cbio_finalproject.util.predition import *
+from cbio_finalproject.core.users import load
 
 pop_size=1000
 elitism_n=5
@@ -14,7 +9,6 @@ crossover_tax = 50
 mutate_tax = 10
 L = 10
 tournament_size = 4
-techs = [None, pearson_similarity, spearman_similarity, cosine_similarity, euclidean_similarity]
 list_usuarios = load(0)
 
 def random_individual(user):

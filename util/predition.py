@@ -1,5 +1,11 @@
 import numpy as np
 import heapq, random, copy, math, sys
+from cbio_finalproject.util.Functions import *
+from cbio_finalproject.cf.pearson_correlation import pearson_similarity
+from cbio_finalproject.cf.spearman_rank import spearman_similarity
+from cbio_finalproject.cf.cosine import cosine_similarity
+from cbio_finalproject.cf.euclidean import euclidean_similarity
+techs = [None, pearson_similarity, spearman_similarity, cosine_similarity, euclidean_similarity]
 
 k = 0
 
@@ -48,7 +54,7 @@ def best_similar_u(rating_matrix, l):
 
 
 def get_best_predictions(qt, predicoes):
-    if len(predicoes)==0:
+    if empty(predicoes):
         return []
 
     bests = []
@@ -63,7 +69,7 @@ def get_best_predictions(qt, predicoes):
 def calcular_rmse(user, preds):
     num = 0.0
     x = 0.0
-    if len(preds) == 0:
+    if empty(preds):
         return sys.float_info.max
     for p in range(len(preds)):
         p_i = preds[p][1]
@@ -94,7 +100,7 @@ def avg_(arr):
         return sum/count
 
 def predicao_u(user_a, mt, high_similars):
-    if len(high_similars)==0:
+    if empty(high_similars):
         return []
     rat_a = user_a[1]
     ra = avg_(rat_a)
