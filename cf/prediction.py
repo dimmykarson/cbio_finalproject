@@ -5,9 +5,12 @@ import math
 import numpy as np
 from numpy import matrix
 
-def prediction(rate, users, similarity_method):
+def prediction(users, similarity_method):
+    print("Calc correlation matrix")
     matrix = user_correlation_matrix(similarity_method, users)
+    print("Finishing Calc correlation matrix")
     users = []
+    print("Calc predictions")
     for av in matrix:
         user = av[0][0]
         users.append(user)
@@ -16,6 +19,7 @@ def prediction(rate, users, similarity_method):
             if z[1] >= avg:
                 user.similar_users.append(z)
         ra_ = sum(user.item_ratings) / len(user.item_ratings)
+        print("Prediction to "+str(user))
         for i in range(len(user.item_ratings)):
             if user.item_ratings[i] > 0:
                 continue
@@ -33,6 +37,7 @@ def prediction(rate, users, similarity_method):
                 pai = 0
             user.item_with_predictions.append([i, pai])
         user.item_with_predictions = sorted(user.item_with_predictions, key=lambda row: row[1], reverse=True)
+    print("Finishing Calc predictions")
     return users
 
 

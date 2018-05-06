@@ -1,9 +1,12 @@
 from scipy.spatial.distance import cosine
-import sys
+
 def cosine_similarity(base, target):
     evaluation = cosine(base, target)
-    if evaluation <= 0.0:
-        return sys.float_info.max
+    if evaluation==0:
+        return 1
     else:
-        return 1/evaluation
+        j = ((1/evaluation))/100
+        if j > 1:
+            j = 0.99-evaluation
+        return j
 
