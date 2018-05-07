@@ -7,14 +7,17 @@ best = 10
 n = 0 #qt_componentes
 C = [] #componentes
 e = 0.01 #constante de evaporação
-popsize = 10
 y = 0 #valor inicial do feromôneo
 t = 10 #interações do hill-climbind
 
-L = 10
+
 
 p_ = [y]*n #iniciando vetor de feromônio
-interacoes = 100
+L = 10
+
+popsize = 100
+interacoes = 1000
+
 
 list_usuarios = load(0)
 user = random.choice(list_usuarios)
@@ -109,8 +112,9 @@ def fitness(S):
         return 0
     return (1/fit)*qt_itens
 
+components()
+
 def run(pop_size):
-    components()
     Best = None
     qt_interacoes = 0
     while True:
