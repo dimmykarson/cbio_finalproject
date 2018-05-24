@@ -137,7 +137,8 @@ def run(user, pop_size, elitism_n, generations):
             break
     return best
 
-
+'''
 user = random.choice(list_usuarios)
 best = run(user, pop_size, elitism_n, gen)
 print(str(best))
+'''

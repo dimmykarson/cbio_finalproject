@@ -139,3 +139,19 @@ def pred(user, list_usuarios, qt, tech):
     return rmse
 
 
+from cbio_finalproject.core.users import load_from_file
+
+def gerar_arquivos():
+    users = load_from_file()
+    for t in techs:
+        if t==None:
+            continue
+        file = open("C:/temp/rmse"+str(t.__name__)+"_k_1.csv", "w")
+        for u in users:
+            print("Avaliando %d" % u[0])
+            linha = str(u[0])
+            print("Calc rmse...")
+            for i in range(11):
+                rmse = pred(u, users, i, t)
+                linha=linha+";"+str(rmse)
+            file.write(linha+"\n")
