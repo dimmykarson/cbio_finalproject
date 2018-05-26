@@ -1,75 +1,81 @@
-
+import math, copy
 from cbio_finalproject.util.predition import *
 from cbio_finalproject.core.users import load, init_pop_2, obter_gene
 
 
-L = 10
+
+L = 10 #tamanho da lista de predições
 tournament_size = 2
-pop_size = 500
-elitism_n = 0
-generations = 100
-mutate_tax = 20
+pop_size = 50
+elitism_n = 2
+generations = 5000
+mutate_tax = 10
 crossover_tax = 70
 
 def assess_fitness(ind):
-    r = 0.0
+    rmse_t = 0.0
     qt = 0
+    t = 0
     for i in range(2, 6):
-        r = r+ind[i][1]
-        qt = qt+ind[i][0]
-    if r==0:
-        r = sys.float_info.max
-    if qt>10:
-        r = r*qt
-    ind[0] = (1/r)
+        if ind[i][0]>0:
+            rmse_aux = obter_gene(i, ind[i][0])
+            ind[i][1] = rmse_aux
+            rmse_t=rmse_t+rmse_aux
+            t=t+1
+            qt=qt+ind[i][0]
+    fit = 0
+    if t == 0 or rmse_t==0.0:
+        fit = sys.float_info.max
+    else:
+        z = math.fabs(10-qt)
+        fit = (rmse_t/t)*(z+1)
+    ind[0] = fit
     ind[1] = qt
-    return ind
 
 def fitness(p):
     return p[0]
 
-#torunament
+#tournament
 def select_with_replacement(pop):
     best = random.choice(pop)
     for i in range(1, tournament_size):
         next_p = random.choice(pop)
-        if (fitness(next_p) > fitness(best)):
+        if (fitness(next_p) < fitness(best)):
             best = next_p
     return best
 
-
+#one point
 def crossover(pa_c, pb_c):
     r = random.uniform(1, 100)
     if crossover_tax >= r:
         point = random.randint(3, 4)
         aux_1 = pa_c[2:point]
         aux_2 = pa_c[point:6]
-
         aux_3 = pb_c[2:point]
         aux_4 = pb_c[point:6]
-
         res_1 = aux_1 + aux_4
         res_2 = aux_3 + aux_2
-
         pa_c[2:6] = res_1
         pb_c[2:6] = res_2
 
     return pa_c, pb_c
 
 def mutate(a):
-
     for i in range(2,6):
-        r = random.randint(0, 100)
+        r = random.randint(1, 100)
         if mutate_tax > r:
-            qt = random.randint(0,10)
-            a[i] = [qt, obter_gene(i, qt)]
-
+            r2 = random.randint(0, 10)
+            a[i][0] = r2
     return a
 
 
 
-
 def run():
+
+    rel_path = "result_"+str(generations)+"_"+str(pop_size)+"_"+str(crossover_tax)+"_"+str(mutate_tax)+"_"+str(elitism_n)+"_.txt"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    file = open(abs_file_path, "w")
+
     pop = init_pop_2(pop_size)
     best = None
     gen = 0
@@ -79,19 +85,18 @@ def run():
         for p in pop:
             assess_fitness(p)
             qt_elemt=qt_elemt+1
-            if best == None or fitness(p) > fitness(best):
-                best = p
-        q = heapq.nlargest(elitism_n, pop)
+            if best == None or fitness(p) < fitness(best):
+                best = copy.deepcopy(p)
+        q = heapq.nsmallest(elitism_n, pop)
         for z in range(int((pop_size - elitism_n) / 2)):
             pa = select_with_replacement(pop)
             pb = select_with_replacement(pop)
-            pa_c = pa[:]
-            pb_c = pb[:]
-            children = crossover(pa_c, pb_c)
+            children = crossover(copy.deepcopy(pa), copy.deepcopy(pb))
             q.append(mutate(children[0]))
             q.append(mutate(children[1]))
-        p = q
+        pop = copy.deepcopy(q)
         print("%d geração. Melhor elemento (RMSE): %s" %(gen, str(best[0]) + ": " + str(best)))
+        file.write("%d;%f\n" %(gen, best[0]))
         if gen > generations:
             break
     return best
@@ -99,3 +104,5 @@ def run():
 
 
 run()
+rel_path = "result_"+str(generations)+"_"+str(pop_size)+"_"+str(crossover_tax)+"_"+str(mutate_tax)+"_"+str(elitism_n)+"_.txt"
+plot(rel_path)

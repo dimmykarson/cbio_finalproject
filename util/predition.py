@@ -1,4 +1,5 @@
-import numpy as np
+import numpy as np, os
+script_dir = os.path.dirname(__file__)
 import heapq, random, copy, math, sys
 from cbio_finalproject.util.Functions import *
 from cbio_finalproject.cf.pearson_correlation import pearson_similarity
@@ -68,19 +69,15 @@ def get_best_predictions(qt, predicoes):
 
 def calcular_rmse(user, preds):
     num = 0.0
-    x = 0.0
     if empty(preds):
         return sys.float_info.max
     for p in range(len(preds)):
         p_i = preds[p][1]
         if p_i <= 0:
-            continue
+            p_i = 0
         r_i = user[1][preds[p][0]]
         num = num + math.pow(p_i - r_i, 2)
-        x = x + 1
-    if x == 0:
-        return sys.float_info.max
-    rmse = math.sqrt(num / x)
+    rmse = math.sqrt(num / len(preds))
     return rmse
 
 def get(mt, cod):
@@ -146,7 +143,9 @@ def gerar_arquivos():
     for t in techs:
         if t==None:
             continue
-        file = open("C:/temp/rmse"+str(t.__name__)+"_k_1.csv", "w")
+        rel_path = "rmse"+str(t.__name__)+"_k_"+str(k)+".csv"
+        abs_file_path = os.path.join(script_dir, rel_path)
+        file = open(abs_file_path, "w")
         for u in users:
             print("Avaliando %d" % u[0])
             linha = str(u[0])
@@ -155,3 +154,5 @@ def gerar_arquivos():
                 rmse = pred(u, users, i, t)
                 linha=linha+";"+str(rmse)
             file.write(linha+"\n")
+
+#gerar_arquivos()

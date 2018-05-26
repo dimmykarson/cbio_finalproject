@@ -1,7 +1,8 @@
-import random
+import random, copy
 from cbio_finalproject.util.Functions import *
 from cbio_finalproject.util.predition import *
-from cbio_finalproject.core.users import load
+from cbio_finalproject.core.users import *
+
 
 best = 10
 n = 0 #qt_componentes
@@ -9,7 +10,7 @@ C = [] #componentes
 e = 0.01 #constante de evaporação
 y = 0 #valor inicial do feromôneo
 t = 10 #interações do hill-climbind
-
+tx_tweak = 20
 
 
 p_ = [y]*n #iniciando vetor de feromônio
@@ -24,17 +25,18 @@ user = random.choice(list_usuarios)
 
 def components():
     print("Load componentes")
-    for t in range(1, 5):
+    for t in range(2, 6):
         for z in range(0, 11):
-            predicao = pred(user, list_usuarios, z, techs[t])
+            ##predicao = pred(user, list_usuarios, z, techs[t])
             feromonio = 0
-            C.append([t, z, predicao, feromonio])
+            rmse = obter_gene(t, z)
+            C.append([t, z, rmse, feromonio])
 
 def isBest(sol):
     return fitness(sol)>best
 
 def criar_c_(C, S):
-    C_ = C[:]
+    C_ = copy.deepcopy(C)
     to_remove = []
     l = get_L(S)
     for s in S:
@@ -57,7 +59,7 @@ def get_L(S):
 
 
 def selecionar(S, C_):
-    i = len(S)+1
+    i = len(S)+2
     x = [z for z in C_ if z[0]==i]
     avg = sum(h[3] for h in x)/len(x)
     x_ = [z for z in x if z[3]>avg]
@@ -72,8 +74,7 @@ def complete_trail(S):
 def hill_climb(S, t):
     q = 0
     while q < t:
-        s_cp = S[:]
-        R = tweak(s_cp)
+        R = tweak(copy.deepcopy(S))
         if fitness(R)>fitness(S):
             S = R
         q=q+1
@@ -85,21 +86,10 @@ def select_random(cod):
 
 
 def tweak(S):
-    r1 = random.randint(1, 4)
-    r2 = random.randint(1, 4)
-    z1 = S[r1-1][1]
-    z2 = S[r2-1][1]
-
-
-    #pegar aleatoriamente um item dos componentes de cod = r e adicionar na solução
-    x1 = [z for z in C if z[0]==r1 and z[1]==z2]
-    x2 = [z for z in C if z[0]==r2 and z[1]==z1]
-
-    item1 = random.choice(x1)
-    item2 = random.choice(x2)
-    S[r1-1]=item1
-    S[r2-1]=item2
-
+    r = random.randint(0,3)
+    r2 = random.randint(0,10)
+    S[r][1] = r2
+    S[r][2] = obter_gene(S[r][0], r2)
     return S
 
 def assess_fitness(S):
@@ -110,7 +100,8 @@ def fitness(S):
     qt_itens = sum(r[1] for r in S)
     if fit == 0:
         return 0
-    return (1/fit)*qt_itens
+    z = math.fabs(10-qt_itens)
+    return (1/(fit*(z+1)))
 
 components()
 
