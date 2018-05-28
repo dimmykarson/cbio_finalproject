@@ -7,9 +7,9 @@ script_dir = os.path.dirname(__file__)
 def empty(v):
     return v==None or len(v)==0
 
-def plot(file):
-    abs_file_path = os.path.join(script_dir, file)
-    file = open(abs_file_path, "r")
+def plot(file_path):
+    #abs_file_path = os.path.join(script_dir, file)
+    file = open(file_path, "r")
     x = []
     y = []
     reader = csv.reader(file, delimiter=";")

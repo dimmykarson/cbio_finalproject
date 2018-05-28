@@ -54,6 +54,34 @@ avg_rmse_euclidean_similarity = []
 avg_rmse_pearson_similarity =[]
 avg_rmse_spearman_similarity=[]
 
+def random_ind():
+    ind = [0, 0, [0, 0], [0, 0], [0, 0], [0, 0]]
+    L = 10
+    r = random.randint(0, L)
+    ind[2][0] = r
+    ind[2][1] = avg_rmse_cosine[r]
+    if ind[2][1] == 0:
+        ind[2][0] = 0
+    L = L - r
+    r = random.randint(0, L)
+    ind[3][0] = r
+    ind[3][1] = avg_rmse_euclidean_similarity[r]
+    if ind[3][1] == 0:
+        ind[3][0] = 0
+    L = L - r
+    r = random.randint(0, L)
+    ind[4][0] = r
+    ind[4][1] = avg_rmse_pearson_similarity[r]
+    if ind[4][1] == 0:
+        ind[4][0] = 0
+    L = L - r
+    r = random.randint(0, L)
+    ind[5][0] = r
+    ind[5][1] = avg_rmse_spearman_similarity[r]
+    if ind[5][1] == 0:
+        ind[5][0] = 0
+    return ind
+
 def init_pop_2(pop_size):
     pop=[]
     for i in range(pop_size):

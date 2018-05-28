@@ -7,7 +7,6 @@ from cbio_finalproject.core.users import *
 best = 10
 n = 0 #qt_componentes
 C = [] #componentes
-e = 0.01 #constante de evaporação
 y = 0 #valor inicial do feromôneo
 t = 10 #interações do hill-climbind
 tx_tweak = 20
@@ -105,7 +104,18 @@ def fitness(S):
 
 components()
 
-def run(pop_size):
+def zerar_componentes():
+    for c in C:
+        c[3] = 0
+
+
+def run(pop_size, e):
+    zerar_componentes()
+    script_dir = os.path.dirname(__file__)
+    rel_path = "result_ant_" + str(pop_size) + "_" + str(e) + "_.txt"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    file = open(abs_file_path, "w")
+
     Best = None
     qt_interacoes = 0
     while True:
@@ -140,11 +150,12 @@ def run(pop_size):
                     f_i = f_i+fitness(P[p_i])
                     C[c_i][3] = f_i
 
-
+        file.write("%d;%f\n" % (qt_interacoes, fitness(Best)))
         if isBest(Best) or qt_interacoes > interacoes:
             break
     return Best
 
-for i in range(10):
-    Best = run(popsize)
-    print("Solução %d. Fitness: %f. dados: %s" % (i, fitness(Best), str(Best)))
+run(100, 0.1)
+run(1000, 0.5)
+run(5000, 0.1)
+run(5000, 0.5)
