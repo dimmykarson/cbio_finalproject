@@ -64,7 +64,7 @@ def run(t,tx_decrease, S):
         R = tweak(copy.deepcopy(S))
         q_R = quality(R)
         q_S = quality(S)
-        if quality(R) < quality(S) or delta(q_R, q_S, t):
+        if q_R < q_S or delta(q_R, q_S, t):
             S = copy.deepcopy(R)
         t = t*tx_decrease
         if q_S < q_Best:
