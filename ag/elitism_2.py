@@ -97,7 +97,7 @@ def run():
     bests = []
     while True:
         gen+=1
-        print("Interation: %d" % gen)
+        #print("Interation: %d" % gen)
         for p in pop:
             assess_fitness(p)
             qt_elemt=qt_elemt+1
@@ -116,28 +116,38 @@ def run():
         bests.append([gen, best[0]])
         if gen > generations:
             break
+    print(fitness(best))
     plot_array(plot, bests)
-    return best
+    return bests
 
 tournament_size = 2
-pop_size = 100
-elitism_n = 20
-generations = 2000
-mutate_tax = 3
+pop_size = 10
+elitism_n = 2
+generations = 200
+mutate_tax = 30
 crossover_tax = 70
-with_ajust = False
-
-import timeit
-t = timeit.Timer("run()", "from cbio_finalproject.ag.elitism_2 import run")
-print(t.repeat(3, 100))
-
-'''
-for i in range(1000):
-    best = run()
+with_ajust = True
 
 
+all_bests = []
+import time
+for i in range(100):
+    ini = time.time()
+    bests = run()
+    fin = time.time()
+    all_bests.append([fin-ini, bests])
 
-'''
+
+script_dir = os.path.dirname(__file__)
+rel_path = "better_config.txt"
+abs_file_path = os.path.join(script_dir, rel_path)
+file = open(abs_file_path, "w")
+for ab in all_bests:
+    file.write("%f;"%ab[0])
+    for z in ab[1]:
+        file.write("[%d;%f];" %(z[0], z[1]))
+    file.write("\n")
+
 
 plot.title("GA")
 plot.suptitle("T_size:"+str(tournament_size)+", gen:"+str(generations)+", pop_size:"

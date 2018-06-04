@@ -114,8 +114,9 @@ def adjust(s):
                 z += 1
     return s
 
+components()
+
 def run(pop_size, e):
-    components()
     zerar_componentes()
     script_dir = os.path.dirname(__file__)
     rel_path = "result_ant_" + str(pop_size) + "_" + str(e) + "_.txt"
@@ -127,7 +128,7 @@ def run(pop_size, e):
     bests = []
     while True:
         qt_interacoes += 1
-        print("Interação %d" % qt_interacoes)
+        #print("Interação %d" % qt_interacoes)
         P = []
         for i in range(popsize):
             s_p = None
@@ -155,23 +156,40 @@ def run(pop_size, e):
         bests.append([qt_interacoes, fit_best])
         if isBest(Best) or qt_interacoes > interacoes:
             break
+    print(fit_best)
     plot_array(plt, bests)
-    return Best
+    return bests
 
-t = 10#interações do hill-climb
+t = 5#interações do hill-climb
 interacoes = 100
-popsize = 100
-e = 0.1
+popsize = 10
+e = 0.3
 with_ajust = True
 
-for i in range(0,100):
-    run(popsize, e)
+
+
+all_bests = []
+import time
+for i in range(100):
+    ini = time.time()
+    bests = run(popsize, e)
+    fin = time.time()
+    all_bests.append([fin-ini, bests])
+
+
+script_dir = os.path.dirname(__file__)
+rel_path = "better_config.txt"
+abs_file_path = os.path.join(script_dir, rel_path)
+file = open(abs_file_path, "w")
+for ab in all_bests:
+    file.write("%f;"%ab[0])
+    for z in ab[1]:
+        file.write("[%d;%f];" %(z[0], z[1]))
+    file.write("\n")
+
 
 plt.title("ANT")
-plt.suptitle("int:"+str(interacoes)
-             +", pop_size:"+str(popsize)+
-             +", e:"+str(e)+
-              ", with ajust:"+ str(with_ajust)+".png")
-plt.savefig("graph_ga_wa_"+str(with_ajust)+"_pop_"+str(popsize)+"_gen_"+str(interacoes)+".png")
+plt.suptitle("int:"+str(interacoes)+", pop_size:"+str(popsize)+", e:"+str(e)+", with ajust:"+ str(with_ajust)+".png")
+plt.savefig("graph_ga_wa_"+str(with_ajust)+"_pop_"+str(popsize)+"_gen_"+str(interacoes)+"_"+str(e*10)+".png")
 plt.show()
 
