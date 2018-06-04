@@ -1,5 +1,6 @@
 import csv, random, sys, os
 import pandas as pd
+import numpy as np
 script_dir = os.path.dirname(__file__)
 qt_users = 1000
 qt_films = 20
@@ -113,6 +114,13 @@ def init_pop_2(pop_size):
         pop.append(ind)
     return pop
 
+def load_rmses_median(metodo, k):
+    rel_path = "median_rmse_" + metodo + "_k_" + str(k) + ".csv"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    file = open(abs_file_path, "r")
+    reader = csv.reader(file, delimiter=";")
+    resultado = [[float(h) for h in z if h!=''] for z in reader][0]
+    return resultado
 
 def load_rmses_aux(metodo, k):
     rel_path = "rmse"+metodo+"_k_"+str(k)+".csv"
@@ -130,36 +138,39 @@ def load_rmses_aux(metodo, k):
         resultado.append(c)
     return resultado
 
-def load_rmses():
-    rmse_cosine_similarity = load_rmses_aux("cosine_similarity", 1)
-    rmse_euclidean_similarity = load_rmses_aux("euclidean_similarity", 1)
-    rmse_pearson_similarity = load_rmses_aux("pearson_similarity", 1)
-    rmse_spearman_similarity = load_rmses_aux("spearman_similarity", 1)
-    global avg_rmse_cosine
-    avg_rmse_cosine  = [0]*11
-    for i in rmse_cosine_similarity:
-        rmses = i[1]
-        for j in range(len(rmses)):
-            avg_rmse_cosine[j] = avg_rmse_cosine[j]+rmses[j]
+def make_files_by_median():
+    make_file_util("cosine_similarity", 1)
+    make_file_util("euclidean_similarity", 1)
+    make_file_util("pearson_similarity", 1)
+    make_file_util("spearman_similarity", 1)
 
+
+def make_file_util(metodo, k):
+    rel_path = "median_rmse_"+metodo+"_k_"+str(k)+".csv"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    file = open(abs_file_path, "w")
+    rmses_by_user = load_rmses_aux(metodo, k)
+    vet = [j[1] for j in rmses_by_user]
+    rmse_aux = [0] * 11
+    for h in range(len(rmse_aux)):
+        rmse_aux[h] = np.median(np.array([z[h] for z in vet]))
+    s = ""
+    for f in rmse_aux:
+        s = s+str(f)+";"
+    file.write(s + "\n")
+
+
+
+def load_rmses():
+
+    global avg_rmse_cosine
+    avg_rmse_cosine  = load_rmses_median("cosine_similarity", 1)
     global avg_rmse_euclidean_similarity
-    avg_rmse_euclidean_similarity = [0] * 11
-    for i in rmse_euclidean_similarity:
-        rmses = i[1]
-        for j in range(len(rmses)):
-            avg_rmse_euclidean_similarity[j] = avg_rmse_euclidean_similarity[j] + rmses[j]
+    avg_rmse_euclidean_similarity  = load_rmses_median("euclidean_similarity", 1)
     global avg_rmse_pearson_similarity
-    avg_rmse_pearson_similarity = [0] * 11
-    for i in rmse_pearson_similarity:
-        rmses = i[1]
-        for j in range(len(rmses)):
-            avg_rmse_pearson_similarity[j] = avg_rmse_pearson_similarity[j] + rmses[j]
+    avg_rmse_pearson_similarity  = load_rmses_median("pearson_similarity", 1)
     global avg_rmse_spearman_similarity
-    avg_rmse_spearman_similarity = [0] * 11
-    for i in rmse_spearman_similarity:
-        rmses = i[1]
-        for j in range(len(rmses)):
-            avg_rmse_spearman_similarity[j] = avg_rmse_spearman_similarity[j] + rmses[j]
+    avg_rmse_spearman_similarity  = load_rmses_median("spearman_similarity", 1)
 
 
 def obter_gene(tech, qt):
