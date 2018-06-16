@@ -1,0 +1,10 @@
+{
+  "hill_climb_t": 10,
+  "ant_interacoes": 100,
+  "popsize": 2,
+  "with_ajust": true,
+  "evaporation": 0.3,
+  "executions":100,
+  "be_plot": true,
+  "write_files":true
+}

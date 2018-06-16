@@ -128,14 +128,13 @@ def run(pop_size, e):
     bests = []
     while True:
         qt_interacoes += 1
-        #print("Interação %d" % qt_interacoes)
         P = []
         for i in range(popsize):
             s_p = None
             s_p = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], 0]
             for i in range(0, 4):
                 s_p[i] = selecionar(C, i)
-            s_p = hill_climb(s_p[:], t)
+            s_p = hill_climb(s_p[:], hill_climb_t)
             if Best == None or fitness(s_p) < fitness(Best):
                 Best = copy.deepcopy(s_p[:])
             P.append(s_p)
@@ -154,42 +153,109 @@ def run(pop_size, e):
         fit_best = fitness(Best)
         file.write("%d;%f\n" % (qt_interacoes, fit_best))
         bests.append([qt_interacoes, fit_best])
-        if isBest(Best) or qt_interacoes > interacoes:
+        if isBest(Best) or qt_interacoes > ant_interacoes:
             break
-    print(fit_best)
     plot_array(plt, bests)
     return bests
 
-t = 5#interações do hill-climb
-interacoes = 100
+
+hill_climb_t = 5#interações do hill-climb
+ant_interacoes = 100
 popsize = 10
-e = 0.3
+evaporation = 0.3
 with_ajust = True
+be_plot = False
+executions = 100
+write_files = True
+
+
+import json
+
+def load_config():
+    fh = open("config.json", 'r')
+    db = json.load(fh)
+    global hill_climb_t
+    hill_climb_t = db['hill_climb_t']
+    global ant_interacoes
+    ant_interacoes = db['ant_interacoes']
+    global popsize
+    popsize = db['popsize']
+    global evaporation
+    evaporation = db['evaporation']
+    global with_ajust
+    with_ajust = db['with_ajust']
+    global be_plot
+    be_plot = db['be_plot']
+    global executions
+    executions = db['executions']
+    global write_files
+    write_files = db['write_files']
 
 
 
+
+load_config()
 all_bests = []
 import time
-for i in range(100):
+best_time = sys.float_info.max
+sum_time = 0
+avg_time = 0
+worst_time = 0
+
+best_rmse = sys.float_info.max
+sum_rmse = 0
+avg_rmse = 0
+worst_rmse = 0
+
+
+
+for i in range(executions):
     ini = time.time()
-    bests = run(popsize, e)
+    bests = run(popsize, evaporation)
     fin = time.time()
-    all_bests.append([fin-ini, bests])
+    final_time = fin - ini
+    if final_time<best_time:
+        best_time = final_time
+    if final_time>worst_time:
+        worst_time = final_time
+    sum_time += final_time
+
+    best_aux = min(bests, key=lambda item:item[1])[1]
+    worst_aux = max(bests, key=lambda item: item[1])[1]
+    if best_aux<best_rmse:
+        best_rmse = best_aux
+    if worst_aux>worst_rmse:
+        worst_rmse=worst_aux
+    sum_rmse += (sum(x[1] for x in bests)/len(bests))
+    all_bests.append([final_time, bests])
+
+avg_time = sum_time/executions
+avg_rmse = sum_rmse/executions
+
+experiment = str(time.time())
 
 
-script_dir = os.path.dirname(__file__)
-rel_path = "better_config_ant.txt"
-abs_file_path = os.path.join(script_dir, rel_path)
-file = open(abs_file_path, "w")
-for ab in all_bests:
-    file.write("%f;"%ab[0])
-    for z in ab[1]:
-        file.write("[%d;%f];" %(z[0], z[1]))
-    file.write("\n")
+if write_files:
+    script_dir = os.path.dirname(__file__)
+    rel_path = "result_"+experiment+"_ag.txt"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    file = open(abs_file_path, "w")
+    for ab in all_bests:
+        file.write("%f;"%ab[0])
+        for z in ab[1]:
+            file.write("[%d;%f];" %(z[0], z[1]))
+        file.write("\n")
 
+    rel_path = "data_result_"+experiment+"_ag.txt"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    file = open(abs_file_path, "w")
+    file.write("Time: %f; %f; %f\n"%(best_time, worst_time, avg_time))
+    file.write("RMSE: %f; %f; %f" % (best_rmse, worst_rmse, avg_rmse))
 
-plt.title("ANT")
-plt.suptitle("int:"+str(interacoes)+", pop_size:"+str(popsize)+", e:"+str(e)+", with ajust:"+ str(with_ajust)+".png")
-plt.savefig("graph_ga_wa_"+str(with_ajust)+"_pop_"+str(popsize)+"_gen_"+str(interacoes)+"_"+str(e*10)+".png")
-plt.show()
-
+if be_plot:
+    plt.title("ANT")
+    plt.suptitle("int:" + str(ant_interacoes) + ", pop_size:" + str(popsize) + ", e:" + str(evaporation) + ", with ajust:" + str(
+        with_ajust) + ".png")
+    plt.savefig("graph_ga_wa_" + str(with_ajust) + "_pop_" + str(popsize) + "_gen_" + str(ant_interacoes) + "_" + str(
+        evaporation * 10) + ".png")
+    plt.show()
