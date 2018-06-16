@@ -1,1 +1,5 @@
-# cbio_finalproject
+Use
+
+pip install -r req.txt
+
+
