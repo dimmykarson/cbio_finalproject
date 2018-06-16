@@ -1,0 +1,13 @@
+{
+  "tournament_size": 2,
+  "pop_size": 10,
+  "elitism_n": 2,
+  "generations": 200,
+  "mutate_tax": 30,
+  "crossover_tax": 70,
+  "with_ajust": true,
+  "crossover_type": "one_point",
+  "executions":100,
+  "be_plot": true,
+  "write_files":true
+}

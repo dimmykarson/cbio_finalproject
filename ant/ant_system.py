@@ -178,7 +178,7 @@ for i in range(100):
 
 
 script_dir = os.path.dirname(__file__)
-rel_path = "better_config.txt"
+rel_path = "better_config_ant.txt"
 abs_file_path = os.path.join(script_dir, rel_path)
 file = open(abs_file_path, "w")
 for ab in all_bests:

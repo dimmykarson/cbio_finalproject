@@ -184,3 +184,5 @@ def obter_gene(tech, qt):
         return avg_rmse_spearman_similarity[qt]
 
 load_rmses()
+
+
