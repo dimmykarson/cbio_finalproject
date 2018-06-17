@@ -1,4 +1,6 @@
 import math, copy
+import sys
+sys.path.append('../')
 from cbio_finalproject.util.predition import *
 from cbio_finalproject.core.users import load, init_pop_2, obter_gene
 import matplotlib.pyplot as plot
@@ -162,7 +164,10 @@ write_files = True
 import json
 
 def load_config():
-    fh = open("config.json", 'r')
+    script_dir = os.path.dirname(__file__)
+    rel_path = "config.json"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    fh = open(abs_file_path, 'r')
     db = json.load(fh)
 
     global tournament_size
@@ -187,7 +192,6 @@ def load_config():
     executions = db['executions']
     global write_files
     write_files = db['write_files']
-
 
 load_config()
 all_bests = []
@@ -254,6 +258,7 @@ if be_plot:
                   + str(pop_size) + ", mutate_tax:" + str(mutate_tax / 100) + ", crossover:" + str(
         crossover_tax / 100) +
                   ", with ajust:" + str(with_ajust) + ".png")
-    plot.savefig("graph_ga_wa_" + str(with_ajust) + "_pop_" + str(pop_size) + "_gen_" + str(generations) + " (" + str(
+    abs_file_path = os.path.join(script_dir, "graph_ga_wa_" + str(with_ajust) + "_pop_" + str(pop_size) + "_gen_" + str(generations) + " (" + str(
         mutate_tax) + " " + str(crossover_tax) + ").png")
+    plot.savefig(abs_file_path)
     plot.show()

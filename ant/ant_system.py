@@ -1,4 +1,6 @@
 import random, copy
+import sys
+sys.path.append('../')
 from cbio_finalproject.util.Functions import *
 from cbio_finalproject.util.predition import *
 from cbio_finalproject.core.users import *
@@ -172,7 +174,10 @@ write_files = True
 import json
 
 def load_config():
-    fh = open("config.json", 'r')
+    script_dir = os.path.dirname(__file__)
+    rel_path = "config.json"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    fh = open(abs_file_path, 'r')
     db = json.load(fh)
     global hill_climb_t
     hill_climb_t = db['hill_climb_t']
@@ -256,6 +261,8 @@ if be_plot:
     plt.title("ANT")
     plt.suptitle("int:" + str(ant_interacoes) + ", pop_size:" + str(popsize) + ", e:" + str(evaporation) + ", with ajust:" + str(
         with_ajust) + ".png")
-    plt.savefig("graph_ga_wa_" + str(with_ajust) + "_pop_" + str(popsize) + "_gen_" + str(ant_interacoes) + "_" + str(
+    abs_file_path = os.path.join(script_dir, "graph_ga_wa_" + str(with_ajust) + "_pop_" + str(popsize) + "_gen_" + str(ant_interacoes) + "_" + str(
         evaporation * 10) + ".png")
+
+    plt.savefig(abs_file_path)
     plt.show()
