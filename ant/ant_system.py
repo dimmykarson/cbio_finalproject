@@ -254,6 +254,9 @@ if write_files:
     rel_path = "data_result_"+experiment+"_ag.txt"
     abs_file_path = os.path.join(script_dir, rel_path)
     file = open(abs_file_path, "w")
+    file.write(
+        "hill_climb_t:%d; pop_size:%d; ant_interacoes:%d;  evaporation:%f; with_ajust:%s\n" %
+        (hill_climb_t, popsize, ant_interacoes, evaporation, with_ajust))
     file.write("Time: %f; %f; %f\n"%(best_time, worst_time, avg_time))
     file.write("RMSE: %f; %f; %f" % (best_rmse, worst_rmse, avg_rmse))
 

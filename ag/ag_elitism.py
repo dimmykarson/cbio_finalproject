@@ -160,7 +160,7 @@ crossover_type = 'one_point'
 be_plot = False
 executions = 100
 write_files = True
-
+db=None
 import json
 
 def load_config():
@@ -249,6 +249,8 @@ if write_files:
     rel_path = "data_result_"+experiment+"_ag.txt"
     abs_file_path = os.path.join(script_dir, rel_path)
     file = open(abs_file_path, "w")
+    file.write("tournament_size:%d; pop_size:%d; elitism_n:%d; generations:%d; mutate_tax:%f; crossover_tax:%f; crossover_type:%s; executions:%d; with_ajust:%s\n" %
+               (tournament_size, pop_size, elitism_n, generations, mutate_tax, crossover_tax, crossover_type, executions, with_ajust))
     file.write("Time: %f; %f; %f\n"%(best_time, worst_time, avg_time))
     file.write("RMSE: %f; %f; %f" % (best_rmse, worst_rmse, avg_rmse))
 
